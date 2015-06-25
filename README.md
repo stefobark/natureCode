@@ -1,2 +1,2 @@
 # natureCode
-learning from "The Nature of Code"
+Learning from [the Nature of Code](http://natureofcode.com/book/)
