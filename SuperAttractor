@@ -1,0 +1,104 @@
+class SuperAttractor {
+
+  PVector location;
+  float mass;
+  float startAngle = 0;
+  float angleVel = 0.23;
+  float x = 0;
+  float lifespan;
+  
+  SuperAttractor(float m) {
+    mass = m;
+    location = new PVector(0, 0);
+    lifespan = 255.0;
+  }
+  
+  void update() {
+    startAngle += 0.015;
+    float angle = startAngle;
+    if(location.x <= width){
+      x += 5;
+      float y = map(sin(angle),-2,2,0,height-height/8);
+      location.x = x;
+      location.y = y;
+      angle += angleVel;
+     }
+    lifespan -= 2.0;
+    mass -= .9;
+  }
+  
+ 
+     
+  void display() {
+      stroke(0, lifespan);
+      fill(0,lifespan);
+      strokeWeight(2);
+      ellipse(location.x,location.y,48,48);
+  }
+  
+  // Is the attractor still alive?
+  boolean isDead() {
+    if (lifespan < 0.0) {
+      return true;
+    } 
+    else {
+      return false;
+    }
+  }
+
+  void attractShaker(Shaker m) {
+    PVector force = PVector.sub(location, m.location);             // Calculate direction of force
+    float distance = force.mag();                                 // Distance between objects
+    if(distance > lifespan){
+      distance = constrain(distance, 100.0, 900.0);
+      force.normalize();
+      float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
+      force.mult(strength*5000);    
+    } else {
+      force.mult(0);
+    }
+    m.applyForce(force);
+  }
+  
+  void attractUnfriendly(UnFriendly m) {
+    PVector force = PVector.sub(location, m.location);             // Calculate direction of force
+    float distance = force.mag();                                 // Distance between objects
+    if(distance > lifespan){
+      distance = constrain(distance, 100.0, 900.0);
+      force.normalize();
+      float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
+      force.mult(strength*5000);    
+    } else {
+      force.mult(0);
+    }
+       m.applyForce(force);
+  }
+  
+   void attractFriendly(Friendly m) {
+    PVector force = PVector.sub(location, m.location);             // Calculate direction of force
+    float distance = force.mag();                                 // Distance between objects
+    if(distance > lifespan){
+      distance = constrain(distance, 100.0, 900.0);
+      force.normalize();
+      float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
+      force.mult(strength*5000);    
+    } else {
+      force.mult(0);
+    }
+       m.applyForce(force);
+  }
+  
+  void attractMover(Mover m) {
+   PVector force = PVector.sub(location, m.location);             // Calculate direction of force
+    float distance = force.mag();                                 // Distance between objects
+    if(distance > lifespan){
+      distance = constrain(distance, 100.0, 900.0);
+      force.normalize();
+      float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
+      force.mult(strength*5000);    
+    } else {
+       m.applyForce(force);
+    }
+       m.applyForce(force);
+  }
+ }
