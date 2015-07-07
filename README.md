@@ -25,4 +25,7 @@ The class for super attractors.
 ####Liquid.pde####
 The class for liquid.
 
-
+###The Future###
+1. going to implement wind (perlin noise force).
+2. going to use inheritance (I've been doing too much copying and pasting) and ArrayLists (easier to create 'particle systems', bunches of creatures of any number).
+3. continue learning object oriented best practices and fixing ugly things as I go.
