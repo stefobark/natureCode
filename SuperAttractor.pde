@@ -21,9 +21,9 @@ class SuperAttractor {
     float angle = startAngle;
     if(location.x <= width){
       x += incrementer;
-      float y = map(sin(angle),-10,10,1800,height/8);
+      float y = map(sin(angle),-10,10,800,height/8);
       location.x = x;
-      location.y = y/2;
+      location.y = y;
       angle += angleVel;
      } else {
        mass = 0;
@@ -62,7 +62,7 @@ class SuperAttractor {
       distance = constrain(distance, 100.0, 900.0);
       force.normalize();
       float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
-      force.mult(strength*5000);    
+      force.mult(strength*500);    
     } else {
       force.mult(0);
     }
