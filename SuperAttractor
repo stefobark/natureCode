@@ -4,36 +4,45 @@ class SuperAttractor {
   float mass;
   float startAngle = 0;
   float angleVel = 0.23;
-  float x = 0;
+  float x;
   float lifespan;
+  float incrementer;
   
-  SuperAttractor(float m) {
+  SuperAttractor(float m, float u,float i) {
     mass = m;
+    x = u;
     location = new PVector(0, 0);
-    lifespan = 255.0;
+    lifespan = 5555.0;
+    incrementer = i;
   }
   
   void update() {
     startAngle += 0.015;
     float angle = startAngle;
     if(location.x <= width){
-      x += 5;
-      float y = map(sin(angle),-2,2,0,height-height/8);
+      x += incrementer;
+      float y = map(sin(angle),-10,10,1800,height/8);
       location.x = x;
-      location.y = y;
+      location.y = y/2;
       angle += angleVel;
+     } else {
+       mass = 0;
      }
-    lifespan -= 2.0;
-    mass -= .9;
+    lifespan -= 4;
+    if(mass > 0){
+      mass -= .02;
+    } else {
+      mass = 0;
+    }
   }
   
  
      
   void display() {
-      stroke(0, lifespan);
-      fill(0,lifespan);
+      stroke(0, 10);
+      fill(0,10);
       strokeWeight(2);
-      ellipse(location.x,location.y,48,48);
+      ellipse(location.x,location.y,mass,mass);
   }
   
   // Is the attractor still alive?
@@ -49,7 +58,7 @@ class SuperAttractor {
   void attractShaker(Shaker m) {
     PVector force = PVector.sub(location, m.location);             // Calculate direction of force
     float distance = force.mag();                                 // Distance between objects
-    if(distance > lifespan){
+    if(distance < lifespan){
       distance = constrain(distance, 100.0, 900.0);
       force.normalize();
       float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
@@ -63,7 +72,7 @@ class SuperAttractor {
   void attractUnfriendly(UnFriendly m) {
     PVector force = PVector.sub(location, m.location);             // Calculate direction of force
     float distance = force.mag();                                 // Distance between objects
-    if(distance > lifespan){
+    if(distance < lifespan){
       distance = constrain(distance, 100.0, 900.0);
       force.normalize();
       float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
@@ -77,7 +86,7 @@ class SuperAttractor {
    void attractFriendly(Friendly m) {
     PVector force = PVector.sub(location, m.location);             // Calculate direction of force
     float distance = force.mag();                                 // Distance between objects
-    if(distance > lifespan){
+    if(distance < lifespan){
       distance = constrain(distance, 100.0, 900.0);
       force.normalize();
       float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
@@ -86,6 +95,11 @@ class SuperAttractor {
       force.mult(0);
     }
        m.applyForce(force);
+  }
+  
+  void run(){
+    update();
+    display();
   }
   
   void attractMover(Mover m) {
