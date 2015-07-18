@@ -2,117 +2,61 @@ class SuperAttractor {
 
   PVector location;
   float mass;
-  float startAngle = 0;
-  float angleVel = 0.23;
-  float x;
-  float lifespan;
-  float incrementer;
+  float red;
+  float green;
+  float blue;
   
-  SuperAttractor(float m, float u,float i) {
+  SuperAttractor(float m, float x,float y, float r, float g, float b) {
     mass = m;
-    x = u;
-    location = new PVector(0, 0);
-    lifespan = 5555.0;
-    incrementer = i;
+    location = new PVector(x, y);
+    red = r;
+    green = g;
+    blue = b;
+    
   }
   
   void update() {
-    startAngle += 0.015;
-    float angle = startAngle;
-    if(location.x <= width){
-      x += incrementer;
-      float y = map(sin(angle),-10,10,800,height/8);
-      location.x = x;
-      location.y = y;
-      angle += angleVel;
-     } else {
-       mass = 0;
-     }
-    lifespan -= 4;
-    if(mass > 0){
-      mass -= .02;
-    } else {
-      mass = 0;
-    }
   }
   
- 
-     
   void display() {
-      stroke(0, 10);
-      fill(0,10);
+      stroke(20, 0);
+      fill(red,green,blue,00);
       strokeWeight(2);
       ellipse(location.x,location.y,mass,mass);
   }
-  
-  // Is the attractor still alive?
-  boolean isDead() {
-    if (lifespan < 0.0) {
-      return true;
-    } 
-    else {
-      return false;
-    }
-  }
 
-  void attractShaker(Shaker m) {
-    PVector force = PVector.sub(location, m.location);             // Calculate direction of force
-    float distance = force.mag();                                 // Distance between objects
-    if(distance < lifespan){
-      distance = constrain(distance, 100.0, 900.0);
-      force.normalize();
-      float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
-      force.mult(strength*500);    
+  void attract(Mover m) {
+    PVector force = PVector.sub(location, m.location);      
+    float distance = force.mag(); 
+    //for changing color when it is influenced by this attractor
+    if(distance <= mass + 40){
+      m.red += (red - m.red)/100;
+      m.green += (green - m.green)/100;
+      m.blue += (blue - m.blue)/100;
+    }
+    distance = constrain(distance, 10.0, 200.0);
+    force.normalize();
+    
+    //if the mover is less than half of the attractor's mass away
+    if(distance <= mass/2){
+      float strength = (g * m.mass) / (distance); 
+      force.mult(-strength*50);
+      if(mass > 500){
+        mass = 30;
+      } else {
+        mass += strength * .2;
+      }
+      
     } else {
-      force.mult(0);
+      float strength = (g * mass * m.mass) / (distance * distance); 
+      force.mult(strength*100);
+      mass -= strength * .01;
     }
     m.applyForce(force);
   }
-  
-  void attractUnfriendly(UnFriendly m) {
-    PVector force = PVector.sub(location, m.location);             // Calculate direction of force
-    float distance = force.mag();                                 // Distance between objects
-    if(distance < lifespan){
-      distance = constrain(distance, 100.0, 900.0);
-      force.normalize();
-      float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
-      force.mult(strength*5000);    
-    } else {
-      force.mult(0);
-    }
-       m.applyForce(force);
-  }
-  
-   void attractFriendly(Friendly m) {
-    PVector force = PVector.sub(location, m.location);             // Calculate direction of force
-    float distance = force.mag();                                 // Distance between objects
-    if(distance < lifespan){
-      distance = constrain(distance, 100.0, 900.0);
-      force.normalize();
-      float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
-      force.mult(strength*5000);    
-    } else {
-      force.mult(0);
-    }
-       m.applyForce(force);
-  }
-  
+ 
   void run(){
     update();
     display();
-  }
-  
-  void attractMover(Mover m) {
-   PVector force = PVector.sub(location, m.location);             // Calculate direction of force
-    float distance = force.mag();                                 // Distance between objects
-    if(distance > lifespan){
-      distance = constrain(distance, 100.0, 900.0);
-      force.normalize();
-      float strength = (g * mass * m.mass) / (distance * distance); // Calculate gravitional force magnitude
-      force.mult(strength*5000);    
-    } else {
-       m.applyForce(force);
-    }
-       m.applyForce(force);
   }
  }
