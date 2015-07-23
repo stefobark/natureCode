@@ -1,4 +1,3 @@
-// Steve Barker's ecosystem inspired by:
 // The Nature of Code
 // Daniel Shiffman
 // http://natureofcode.com
@@ -15,8 +14,8 @@ class Mover {
   float red;
   float green;
   float blue;
-  float maxspeed;
-  float maxforce;
+  float maxspeed = 1;
+  float maxforce = 1;
 
   Mover(float m, float x, float y, float l) {
     mass = m;
@@ -58,10 +57,10 @@ class Mover {
     popMatrix();
   }
   
-  // Alignment
-  // For every nearby boid in the system, calculate the average velocity
+  // Alignment (from Reynold's steering algorithms)
+  // For every nearby mover in the system, calculate the average velocity
   PVector align (ArrayList<Mover> movers) {
-    float neighbordist = 50;
+    float neighbordist = 80;
     PVector sum = new PVector(0,0);
     int count = 0;
     for (Mover other : movers) {
@@ -84,10 +83,10 @@ class Mover {
   }
 
   
-  // Separation
+  // Separation (from Reynold's steering algorithms)
   // Method checks for nearby movers and steers away
   void separate (ArrayList<Mover> movers) {
-    float desiredseparation = 25.0f;
+    float desiredseparation = 15.0f;
     PVector steer = new PVector(0,0,0);
     int count = 0;
     // For every boid in the system, check if it's too close
@@ -119,21 +118,6 @@ class Mover {
     applyForce(steer);
   }
 
-  void repel(Mover m, float repelDistance) {
-    PVector force = PVector.sub(location, m.location); 
-    float distance = force.mag();
-   if(red > 200 || blue > 200){   
-    distance = constrain(distance, 5.0, 100.0);   
-    force.normalize();
-    float strength = (g * m.mass) / distance; 
-    force.mult(-strength*.5);  
-   } else {
-     force.mult(0);
-   }
-    
-     m.applyForce(force);
-  }
-  
   void run(){
     update();
     checkEdges();
@@ -155,27 +139,13 @@ class Mover {
     applyForce(force);
   }
   
-  void attract(Mover m, float attractDistance) {
-    PVector force = PVector.sub(location, m.location);             
-    float distance = force.mag();
-    if(green > 150){
-      distance = constrain(distance, 5.0, 100.0);
-      force.normalize(); 
-      float strength = (g * m.mass) / distance;
-      force.mult(strength); 
-    } else {
-       force.mult(0);
-    }
-    m.applyForce(force);
-  }
-  
   boolean isTouching(Mover m){
     PVector force = PVector.sub(location, m.location);  
     float distance = force.mag();
-    if(distance <= mass){
-      red += (m.red - red)/8;
-      blue += (m.blue - blue)/8;
-      green += (m.green - green)/8;
+    if(distance <= mass + 20){
+      red += (m.red - red)/50;
+      blue += (m.blue - blue)/50;
+      green += (m.green - green)/50;
       return true;
     } else {
       return false;
