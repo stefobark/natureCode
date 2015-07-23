@@ -20,7 +20,7 @@ class SuperAttractor {
   
   void display() {
       stroke(20, 0);
-      fill(red,green,blue,00);
+      fill(red,green,blue,10);
       strokeWeight(2);
       ellipse(location.x,location.y,mass,mass);
   }
@@ -30,27 +30,37 @@ class SuperAttractor {
     float distance = force.mag(); 
     //for changing color when it is influenced by this attractor
     if(distance <= mass + 40){
-      m.red += (red - m.red)/100;
-      m.green += (green - m.green)/100;
-      m.blue += (blue - m.blue)/100;
+      m.red += (red - m.red)/50;
+      m.green += (green - m.green)/50;
+      m.blue += (blue - m.blue)/50;
     }
     distance = constrain(distance, 10.0, 200.0);
     force.normalize();
     
     //if the mover is less than half of the attractor's mass away
-    if(distance <= mass/2){
-      float strength = (g * m.mass) / (distance); 
-      force.mult(-strength*50);
-      if(mass > 500){
+    if(distance <= mass){
+      float strength = (mass * m.mass) / (distance * distance); 
+      
+      //make force stronger if the attractor is red or blue
+      if(blue > 100 || red > 100){
+        force.mult(10);
+      }
+      force.mult(-strength*2);
+      if(mass > 800){
         mass = 30;
       } else {
-        mass += strength * .2;
+        mass += strength * .3;
       }
       
     } else {
-      float strength = (g * mass * m.mass) / (distance * distance); 
-      force.mult(strength*100);
-      mass -= strength * .01;
+      float strength = (mass * m.mass) / (distance * distance);
+      
+     //make force weak if the attractor is green 
+     if(green > 200){
+        force.mult(.5);
+      } 
+      
+      force.mult(strength*2);
     }
     m.applyForce(force);
   }
