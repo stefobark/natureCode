@@ -2,20 +2,17 @@
 Learning from [the Nature of Code](http://natureofcode.com/book/)
 
 ###Summary###
-Here is the beginning of an ecosystem built from ideas presented in the Nature of Code. There is a lot of clean up to do. I've been learning a lot and have a lot of good ideas, just need more time!
+I'm using some of Reynold's steering algorithms. The SuperAttractors grow if they encounter movers and they share their color with those movers. They align with the velocity of other movers in their vicinity, but if they get close, they begin to repel. It looks like they're flocking around autonomously because underneath them the SuperAttractors are pushing and pulling them as they grow. I started implemented a 'lifespan'. I think I'll reduce their lifespan on every update() but add to it if ... some condition is fulfilled... maybe I'll make a food object, or a certain region that represents food. And, I might make a predator object that 'kills' movers when they touch. The movers also face the direction of their velocity, which is pretty cool.
 
 ####ecosystem.pde ####
-The main program.
+The main program. I started to bring in toxiclibs in order to make chains of movers attached by springs, but I haven't finished this yet.
 
 ####Movers.pde####
 The class for movers.
-
-####Shakers.pde####
-The class for shakers.
 
 ####SuperAttractor.pde####
 The class for super attractors.
 
 ####Liquid.pde####
-The class for liquid.
+The class for liquid. I'm not using this now, but it's handy to have around.
 
