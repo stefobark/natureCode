@@ -18,29 +18,7 @@
     h = h_;
     c = c_;
   }
-  
-  // Is the Shaker in the Liquid?
-  boolean containsShaker(Shaker s) {
-    PVector t = s.location;
-    
-    if (t.x > x && t.x < x + w && t.y > y && t.y < y + h) {
-      return true;
-    }  
-    else {
-      return false;
-    }
-  }
-  
-  boolean containsUnfriendly(UnFriendly s) {
-    PVector t = s.location;
-    
-    if (t.x > x && t.x < x + w && t.y > y && t.y < y + h) {
-      return true;
-    }  
-    else {
-      return false;
-    }
-  }
+
   
   // Is the Mover in the Liquid?
   boolean containsMover(Mover s) {
@@ -52,40 +30,6 @@
     else {
       return false;
     }
-  }
-  
-  // Calculate drag force
-  PVector dragShaker(Shaker s) {
-    // Magnitude is coefficient * speed squared
-    float speed = s.velocity.mag();
-    float dragMagnitude = c * speed * speed;
-
-    // Direction is inverse of velocity
-    PVector dragForce = s.velocity.get();
-    dragForce.mult(-1);
-    
-    // Scale according to magnitude
-    // dragForce.setMag(dragMagnitude);
-    dragForce.normalize();
-    dragForce.mult(dragMagnitude);
-    return dragForce;
-  }
-  
-  // Calculate drag force
-  PVector dragUnfriendly(UnFriendly s) {
-    // Magnitude is coefficient * speed squared
-    float speed = s.velocity.mag();
-    float dragMagnitude = c * speed * speed;
-
-    // Direction is inverse of velocity
-    PVector dragForce = s.velocity.get();
-    dragForce.mult(-1);
-    
-    // Scale according to magnitude
-    // dragForce.setMag(dragMagnitude);
-    dragForce.normalize();
-    dragForce.mult(dragMagnitude);
-    return dragForce;
   }
   
   // Calculate drag force
@@ -107,7 +51,7 @@
   
   void display() {
     noStroke();
-    fill(0,0,255,10);
+    fill(0,0,255,60);
     rect(x,y,w,h);
   }
 
