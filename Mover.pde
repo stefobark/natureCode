@@ -1,3 +1,4 @@
+// Steve Barker's ecosystem inspired by:
 // The Nature of Code
 // Daniel Shiffman
 // http://natureofcode.com
@@ -14,6 +15,8 @@ class Mover {
   float red;
   float green;
   float blue;
+  float maxspeed;
+  float maxforce;
 
   Mover(float m, float x, float y, float l) {
     mass = m;
@@ -54,15 +57,76 @@ class Mover {
     ellipse(0,-mass,mass/3,mass/3);
     popMatrix();
   }
+  
+  // Alignment
+  // For every nearby boid in the system, calculate the average velocity
+  PVector align (ArrayList<Mover> movers) {
+    float neighbordist = 50;
+    PVector sum = new PVector(0,0);
+    int count = 0;
+    for (Mover other : movers) {
+      float d = PVector.dist(location,other.location);
+      if ((d > 0) && (d < neighbordist)) {
+        sum.add(other.velocity);
+        count++;
+      }
+    }
+    if (count > 0) {
+      sum.div((float)count);
+      sum.normalize();
+      sum.mult(maxspeed);
+      PVector steer = PVector.sub(sum,velocity);
+      steer.limit(maxforce);
+      return steer;
+    } else {
+      return new PVector(0,0);
+    }
+  }
+
+  
+  // Separation
+  // Method checks for nearby movers and steers away
+  void separate (ArrayList<Mover> movers) {
+    float desiredseparation = 25.0f;
+    PVector steer = new PVector(0,0,0);
+    int count = 0;
+    // For every boid in the system, check if it's too close
+    for (Mover other : movers) {
+      float d = PVector.dist(location,other.location);
+      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+      if ((d > 0) && (d < desiredseparation)) {
+        // Calculate vector pointing away from neighbor
+        PVector diff = PVector.sub(location,other.location);
+        diff.normalize();
+        diff.div(d);        // Weight by distance
+        steer.add(diff);
+        count++;            // Keep track of how many
+      }
+    }
+    // Average -- divide by how many
+    if (count > 0) {
+      steer.div((float)count);
+    }
+
+    // As long as the vector is greater than 0
+    if (steer.mag() > 0) {
+      // Implement Reynolds: Steering = Desired - Velocity
+      steer.normalize();
+      steer.mult(maxspeed);
+      steer.sub(velocity);
+      steer.limit(maxforce);
+    }
+    applyForce(steer);
+  }
 
   void repel(Mover m, float repelDistance) {
     PVector force = PVector.sub(location, m.location); 
     float distance = force.mag();
-   if(m.red > 150 || m.blue > 150){   
+   if(red > 200 || blue > 200){   
     distance = constrain(distance, 5.0, 100.0);   
     force.normalize();
-    float strength = (g * mass * m.mass) / (distance * distance); 
-    force.mult(-strength*10);  
+    float strength = (g * m.mass) / distance; 
+    force.mult(-strength*.5);  
    } else {
      force.mult(0);
    }
@@ -91,16 +155,14 @@ class Mover {
     applyForce(force);
   }
   
-  //look at the shaker creatures, get the distance by looking at the magnitude of the vector created by subtracting location from shaker location
-  //change mass based on location of opposite creatures. so, if a mover is surrounded by shakers it will grow, if it is not surrounded by shakers, it will shrink
   void attract(Mover m, float attractDistance) {
     PVector force = PVector.sub(location, m.location);             
     float distance = force.mag();
-    if(m.green > 150){
+    if(green > 150){
       distance = constrain(distance, 5.0, 100.0);
       force.normalize(); 
-      float strength = (g * mass * m.mass) / (distance * distance);
-      force.mult(strength*2); 
+      float strength = (g * m.mass) / distance;
+      force.mult(strength); 
     } else {
        force.mult(0);
     }
